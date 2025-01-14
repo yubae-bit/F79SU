@@ -6,7 +6,7 @@ As the majority of the code is provided for you in this class, and you will not 
 
 One method to learn how to code is by imitation, ie typing out the syntax alongside reading the solutions.
 
-Each class will have empty sections of code in Quarto via RStudio for you to add code to alongside the solution, which will be provided in a html. You can view html files in a browser. 
+Each class will have empty sections of code in Quarto via RStudio for you to add code to alongside the solution, which will be provided in a html. You can view html files in a browser (simply save the file and open it). 
 
 Happy Learning and Happy Coding
 Yubo 
