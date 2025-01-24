@@ -1,7 +1,7 @@
 ---
 title: "Class 2: Kaplan-Meier"
 author: "Yubo Rasmussen"
-format: html
+format: docx
 editor: visual
 ---
 
@@ -14,7 +14,9 @@ This notebook demonstrates how to compute and visualize Kaplan-Meier estimates o
 The data represent an experiment studying the time to discontinuation of a medical device. Observations include both complete and censored data, indicated by `Censor`.
 
 ### Load the Data
+
 ```{r}
+library(survival)
 
 # Time to discontinuation (in weeks)
 
@@ -23,52 +25,91 @@ The data represent an experiment studying the time to discontinuation of a medic
 # Create a survival object
 ```
 
+**Questions and Answers**:
+
+1\. **What is the purpose of the `Surv()` function?**
+2\. **Why do we need the censoring indicator?** 
 ### Kaplan-Meier Estimate
+
 ```{r}
 # Fit the Kaplan-Meier survival curve
 
 # Summary of the survival object
 ```
 
+**Questions and Answers**:
+
+1\. **What does `~ 1` mean in this context?** 
+
+2\. **What does `conf.type = "plain"` mean in this context?** 
+
+3\. **What does the Kaplan-Meier estimate represent?** 
+
 ### Plot the Survival Curve
+
 ```{r}
 ```
 
----
+**Questions and Answers**:
+
+1\. **Why is it important to visualize the Kaplan-Meier curve?** 
+
+2\. **What do the confidence intervals indicate on the plot?** 
+
+------------------------------------------------------------------------
 
 ## Example 2: Acute Myelogenous Leukaemia (AML) Data
 
-This example uses AML data where:
-- `1` indicates a relapse occurred.
-- `0` indicates the patient left the study or was still in remission.
+This example uses AML data where: - `1` indicates a relapse occurred. - `0` indicates the patient left the study or was still in remission.
 
 ### Load and Explore the Data
+
 ```{r}
 # Load the aml dataset
 
 # Create a survival object
 ```
 
+**Questions and Answers**:
+
+1\. **What does `status` represent in the AML dataset?** 
+
+2\. **How does the Kaplan-Meier estimate handle censored patients in this dataset?** 
+
 ### Kaplan-Meier Estimate by Group
+
 ```{r}
 # Fit the Kaplan-Meier survival curve by group (x)
 
 # Summary of the survival object
 ```
 
+**Questions and Answers**:
+
+1\. **What does stratifying by `x` achieve in this analysis?** 
+2\. **What key differences might you expect between groups in this example?** 
+
 ### Plot the Survival Curve
+
 ```{r}
 
 # Add legend
 ```
 
----
+**Questions and Answers**:
+
+1\. **What does the legend add to this plot?**
+
+2\. **Why are different line types used for groups?** 
+
+------------------------------------------------------------------------
 
 ## Example 3: Rat Drug Trial
 
 This example involves survival times of rats in a drug trial. Observations include both events and censored data.
 
 ### Load the Data
+
 ```{r}
 # Time to event (in days)
 
@@ -79,7 +120,14 @@ This example involves survival times of rats in a drug trial. Observations inclu
 # Create a survival object
 ```
 
+**Questions and Answers**:
+
+1\. **Why is it important to check that the lengths of `Time` and `Censor` match?** 
+
+2\. **What assumptions are made about censored data in this example?** 
+
 ### Kaplan-Meier Estimate
+
 ```{r}
 # Fit the Kaplan-Meier survival curve
 
@@ -87,5 +135,11 @@ This example involves survival times of rats in a drug trial. Observations inclu
 ```
 
 ### Plot the Survival Curve
+
 ```{r}
+
 ```
+
+**Questions and Answers**:
+
+1\. **What features of the survival curve might indicate the effect of the drug?** 
