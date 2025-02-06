@@ -1,0 +1,214 @@
+---
+title: "Class 4 (Solution)"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+## Introduction
+
+This notebook covers the Binomial Model with the Uniform Distribution of Deaths (UDD) and Constant Force of Mortality (CFM) assumptions. Additionally, it implements the Newton-Raphson method for numerical optimization.
+
+------------------------------------------------------------------------
+
+## Binomial Model: Uniform Distribution of Deaths (UDD)
+
+Write down the loglikelihood function from Example 4.7 in terms of q and assign it as a named variable under the UDD assumption.
+
+```{r}
+# Log likelihood function in terms of q
+
+```
+
+Write a function to plot the log-likelihood function above and call it.
+
+```{r}
+# Plot log likelihood
+
+# Plotting
+```
+
+What are we looking for in this plot? - The maxima of this curve What do you think is a reasonable assumption for the value of `Qhat`? Assign and store it.
+
+```{r}
+```
+
+Write down the score function of Q. Can you explain how the score function is derived?
+
+```{r}
+# Score for Q
+```
+
+Now write a function to plot the Score function and call it.
+
+```{r}
+# Plot of Score function
+```
+
+What are we looking for in this plot? - The value of Q when U(Q) is at 0 What do you think is a reasonable assumption for the value of `QHat`? - 0.68
+
+```{r}
+```
+
+Now, it is time to compute the standard error of the estimated parameter `QHat`.
+
+Use a numerical approximation by computing the difference quotient.
+
+```{r}
+# SE numerical
+```
+
+Use an analytical second derivative approach.
+
+```{r}
+#   And with second derivative
+```
+
+Do the two estimates of SE aggree? - Yes
+
+------------------------------------------------------------------------
+
+## Binomial Model: Constant Force of Mortality (CFM)
+
+Write down the loglikelihood function from Example 4.7 in terms of $\mu$ and assign it as a named variable under the CFM assumption.
+
+```{r}
+# Log likelihood function in terms of mu
+```
+
+Write a function to plot the log-likelihood function above and call it.
+
+```{r}
+# Plot log likelihood
+
+# Plotting
+
+```
+
+What are we looking for in this plot? - The maxima of this curve What do you think is a reasonable assumption for the value of `MuHat`? Assign and store it.
+
+```{r}
+```
+
+Write down the loglikelihood function from Example 4.7 in terms of $\phi = \exp(-\mu/4)$ and assign it as a named variable under the CFM assumption.
+
+```{r}
+# Log likelihood function in terms of phi
+```
+
+Write a function to plot the log-likelihood function above and call it.
+
+```{r}
+# Plot log likelihood for Phi
+```
+
+What are we looking for in this plot? - The maxima of this curve What do you think is a reasonable assumption for the value of `PhiHat`? Assign and store it.
+
+```{r}
+```
+
+Now check the consistency, i.e. is $\phi = \exp(-\mu/4)$ close to $\hat{\phi}$
+
+```{r}
+
+```
+
+Write down the score function for Phi. Can you explain how the score function is derived for Phi?
+
+```{r}
+# Score for Phi
+```
+
+Now write a function to plot the Score function and call it.
+
+```{r}
+# Plot of Score function
+```
+
+What are we looking for in this plot? - The value of Phi when U(Phi) is at 0 What do you think is a reasonable assumption for the value of `PhiHat`? - 0.75
+
+```{r}
+```
+
+Now, it is time to compute the standard error of the estimated parameter `PhiHat`.
+
+Use a numerical approximation by computing the difference quotient.
+
+```{r}
+# SE numerical
+```
+
+Use an analytical second derivative approach.
+
+```{r}
+#   And with second derivative
+```
+
+Do the two estimates of SE aggree? - Yes
+
+Repeat the above and write down the Score function and SE for mu, including a plot of the Score function.
+
+```{r}
+# Score function and SE for mu
+```
+
+What can you say about the relationship between mu and phi? Why do we compute both of them? Which score function do you think is easier to derive analytically?
+
+------------------------------------------------------------------------
+
+## Newton-Raphson Method
+
+Newton-Raphson is an iterative method used to solve equations of the form $f(x) = 0$. The update rule for finding a better estimate of the root is given by:
+
+$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$
+
+Since computing the analytical derivative $f'(x)$ is not always convenient, we use a numerical approximation.
+
+### Implementing the Newton-Raphson Method
+
+```{r}
+# Newton-Raphson iteration using numerical differentiation
+```
+
+### Example: Finding the Square Root of 2
+
+```{r}
+```
+
+### Generalizing Newton-Raphson with a Loop
+
+We can now define a function that iteratively applies the Newton-Raphson method until convergence:
+
+```{r}
+```
+
+### Finding Roots of a Function
+
+```{r}
+```
+
+### Applying Newton-Raphson to the Score Function of Q
+
+```{r}
+```
+
+### Alternative Root Finding Using `uniroot()`
+
+The `uniroot()` function in R can also find the root of a function over a specified interval:
+
+```{r}
+```
+
+### Numerical Derivative of the Log-Likelihood Function
+
+```{r}
+```
+
+### Checking the Score Function at the Estimated Root
+
+```{r}
+```
+
+-   How does the Newton-Raphson method compare to `uniroot()`?
+-   How does step size ( \Delta ) affect convergence?
+-   What are the advantages of using Newton-Raphson in maximum likelihood estimation?
