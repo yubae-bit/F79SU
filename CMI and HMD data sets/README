@@ -1,1 +1,11 @@
-This folder contains the CMI and HMD datasets required for Class 5
+This folder contains the CMI and HMD datasets required for Class 5.
+
+You can use these two Rdata files to load the CMI and EW data into R (rather than using CMI_read.r and EngWales_read.r)
+
+1. Download the Rdata files and save them on your computer.
+
+2. Start R and change the working directory to the folder in which you saved the Rdata files.
+
+3. Use         load("CMI.Rdata")       to load the CMI data. This will create the variables "Age", "Dth", "Exp" and "Year" in R. You can then use those variables in the usual way.
+
+4. Use        load("EngWales.Rdata")       to load the EW data. This will create the variables "Age", "Dth.F", "Dth.M", "Exp.F", "Exp.M" and "Year" in R. You can then use those variables in the usual way.
