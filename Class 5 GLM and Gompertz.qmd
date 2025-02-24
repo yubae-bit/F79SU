@@ -1,0 +1,215 @@
+---
+title: "Class 5 GLMs and Graduation"
+author: Yubo Rasmussen
+format: docx
+editor: visual
+---
+
+## Introduction
+
+This document explores Gompertz's law of mortality using different modeling approaches, including normal models, Poisson regression, and binomial models (GLMs), applied to CMI data.
+
+Load the data from my github repo
+
+```{r}
+EngWales.url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/EngWales.Rdata"
+CMI.url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI.Rdata"
+
+
+load(url(EngWales.url))
+load(url(CMI.url))
+```
+
+## Normal Models
+
+We begin by fitting a Normal model, i.e. a linear regression model. Can you recall what it looks like mathematically?
+
+### Select Data for Year 2000, Ages 40-80
+
+Your Task first is to select and store the number of deaths and exposure for ages 40-80 in 2000. Define a new variable "Obs" that adjusts for exposure and plot "Age" against "Obs".
+
+Q: The Gompertz law of mortality states that mortality rates increase exponentially with ago. Why do we use `Obs <- log(DTH/EXP)`?
+
+```{r}
+
+```
+
+### Fit Simple Normal Model
+
+Let us proceed to fit a simple normal model. Using `lm`, proceed to fit `Obs ~ AGE`. Add the line of best fit from your regression model to the plot above. What are the coefficients of the fited model?
+
+$$
+\log(\text{Obs}) = \beta_0 + \beta_1\text{Age} + \varepsilon_i
+$$
+
+How would you interpret this model and what is $\varepsilon_i$?
+
+```{r}
+
+```
+
+### Fit Weighted Normal Model
+
+A simple normal model assumes that all observations are equally important, whereas a weighted normal model says otherwise. The weighted model assigns weights to observations based on the number of deaths, where ages with more deaths have a higher effect on the regression line, and vice versa.
+
+Now you will proceed to fit a weighted normal model, and plot it as before. Are there any difference in the results between the two models?
+
+```{r}
+
+```
+
+### Residual Analysis
+
+Residuals represent the difference between the actual observed values and the predicted values from our model. Examining residuals helps us understand the goodness of fit and whether the assumptions of the model hold.
+
+1.  **Compute the standard deviation of residuals**: This is used to standardize the residuals.
+2.  **Compute the standardized residuals**: Defined as $z_i = \frac{y_i - \hat{y}_i}{\sigma}$, where $\sigma$ is the residual standard deviation.
+3.  **Plot residuals**: Helps identify potential outliers and check if residuals are randomly distributed (which supports model validity).
+
+```{r}
+
+```
+
+**What are your Interpretations of the residuals?**
+
+## Poisson Model
+
+In this section, we model mortality rates using a **Poisson Generalized Linear Model (GLM)** with a **log-link function**. The Poisson model assumes that the number of deaths follows a Poisson distribution:
+
+$$
+D_x \sim \text{Poisson}(\lambda_x)
+$$
+
+where the **logarithm of the expected deaths** is modeled as a **linear function of age**:
+
+$$
+\log(\lambda_x) = \beta_0 + \beta_1 x + \log(\text{EXP}_x)
+$$
+
+Here, $\text{EXP}_x$ is the exposure (i.e., number of life-years at risk), included as an **offset** in the model.
+
+### Fit the Poisson GLM Model
+
+```{r}
+
+```
+
+-   The `offset(log(EXP))` ensures that the model adjusts for exposure.
+-   The estimated coefficients $\beta_0$ and $\beta_1$ determine the mortality curve.
+
+### Interpret the Coefficients
+
+-   The **intercept (**$\beta_0$) represents the log mortality rate at the baseline age.
+-   The **slope (**$\beta_1$) determines how mortality increases with age.
+-   A positive slope indicates that mortality increases exponentially over time, consistent with **Gompertz’s Law**.
+
+------------------------------------------------------------------------
+
+### Plot the results for visualization
+
+Visualize the **observed mortality rates** and compare them with **model predictions**.
+
+```{r}
+
+```
+
+#### Alternative Visualization: Comparing Poisson and Normal Model
+
+Since we already fitted a **normal model (OLS regression)**, it is useful to **compare** it with the Poisson model.
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+### Residual Analysis for Poisson Model
+
+Residuals help us **assess model fit** and detect possible **misspecifications**.
+
+#### Plot the Pearson and Deviance Residuals
+
+-   **Pearson residuals** measure how far observed values deviate from expected values, standardized by variance.
+-   **Deviance residuals** quantify goodness of fit by comparing observed and fitted values.
+
+```{r}
+
+```
+
+#### Alternative Residual Analysis: Q-Q Plot
+
+A **Q-Q plot** compares the residuals to a normal distribution to check for **deviation from normality**.
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+#### What are potential model refinements?
+
+## Binomial Model
+
+Now, we move to the **Binomial Generalized Linear Model (GLM)** using a **logit-link function**. This model assumes that the probability of death follows a **binomial distribution**:
+
+$$
+Q_x = \frac{D_x}{E_x} \sim \text{Binomial}(E_x, p_x)
+$$
+
+where the **logit transformation** is applied to mortality probabilities:
+
+$$
+\log\left(\frac{p_x}{1 - p_x}\right) = \beta_0 + \beta_1 x
+$$
+
+### Fit the Binomial Model
+
+```{r}
+
+```
+
+### Visualize the Binomial Model
+
+```{r}
+
+```
+
+### Perform Residual Analysis for Binomial Model
+
+```{r}
+
+```
+
+### Interpret the Residuals
+
+------------------------------------------------------------------------
+
+## Gompertz Models Over Time
+
+We now extend the Gompertz model to analyze how mortality changes over time for a given age.
+
+```{r}
+
+```
+
+### Quadratic Model for Time Trends
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+### Residual Analysis for Time Trends
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+## **Conclusion**
+
+-   The **Poisson model** works well but may suffer from overdispersion.
+-   The **Binomial model** provides an alternative framework based on survival probabilities.
+-   Time-based models suggest that mortality rates change over time and may require **nonlinear adjustments**.
