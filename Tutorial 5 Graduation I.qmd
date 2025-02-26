@@ -1,0 +1,158 @@
+---
+title: "Tutorial 5: Graduation I"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+## Tutorial 5: Graduation I
+
+### Question 1
+
+Extract the data for females ages 40 to 80 for the year 2005 from the England and Wales (E&W) data set. Use R to fit Gompertz type models; i.e., for $μ_x$ assume that $\log(μ_x)$ is linear in age $x$ while for $q_x$ assume that $\text{logit}(q_x)$ is linear in $x$.
+
+#### Load the Data
+
+```{r}
+# Define URLs for all required data files
+EngWales_Deaths_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/EngWales_Deaths.txt"
+EngWales_Exposures_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/EngWales_Exposures.txt"
+EngWales_Read_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/EngWales_read.r"
+
+# Download the necessary files
+download.file(EngWales_Deaths_url, destfile = "EngWales_Deaths.txt", mode = "wb")
+download.file(EngWales_Exposures_url, destfile = "EngWales_Exposures.txt", mode = "wb")
+download.file(EngWales_Read_url, destfile = "EngWales_read.r", mode = "wb")
+
+# Now source the R script
+source("EngWales_read.r")
+
+```
+
+#### Extract the Data
+
+```{r}
+#
+#    Extract female data, ages 40 to 80, year 2005.
+#
+
+#
+#   It will be useful to have this as a function so
+#
+Main.plot <- function( ) plot(AGE, Obs, xlab = "Age", ylab = "log(mortality)",
+     main = "Gompertz law: England & Wales, female, ages 40 to 80, year 2005",
+     pch = 16, col = "blue")
+```
+
+#### Part (a)
+
+The model for $μ_x$ using weighted least squares to estimate the parameters.
+
+```{r}
+#
+#  (a) Weighted normal for mu_x
+#
+
+```
+
+#### Part (b)
+
+The model for $μ_x$ using a GLM with Poisson errors to estimate the parameters.
+
+```{r}
+#
+#  (b) GLM with Poisson errors
+#
+
+```
+
+#### Part (c)
+
+The model for $q_x$ using weighted least squares to estimate the parameters. (Hint: You need $\text{Var}[\text{logit}(\hat{q}_x)] ≈ 1/d_x$).
+
+```{r}
+#
+#   (c) Weighted normal for q_x
+#
+
+```
+
+#### Part (d)
+
+The model for $q_x$ using a GLM with binomial errors to estimate the parameters.
+
+```{r}
+#
+#  (d) GLM with binomial errors
+#
+
+```
+
+#### Part (e)
+
+Compare the GLM graduations of $μ_x$ and $q_x$.
+
+```{r}
+#
+#  (e) 
+#
+```
+
+#### Part (f)
+
+Obtain the standardised residuals, $z_x$, in each of the four graduations and plot the $z_x$ against $x$. Comment informally on what these plots tell you.
+
+```{r}
+#
+#  (f)
+#
+#  Normal residuals
+#
+
+
+```
+
+### Question 2
+
+#### Part (a)
+
+Extract the male data for age 65 for all years from the E&W data set. Plot the maximum likelihood estimates of $\log(μ_t)$ against year, $t$. Consider Gompertz style graduations of $μ_t$ with
+
+$$
+\log(\mu_t) = a_0 + a_1t + a_2t^2 + ... + q_pt^p 
+$$
+
+for $p = 1, 2, 3, 4.$ Use the `glm( )` function and Poisson errors to estimate the regression coefficients. Compare the various fits with appropriate plots. *Hint: You will do well to use powers of* $t − \bar{t}$ *in the calls of `glm( )`; see section 5.1.4.*
+
+```{r}
+#
+#    Extract female data, age 65, years 1841 to 2005 (all years).
+#
+
+#
+#   It will be useful to have this as a function so
+#
+Main.plot <- function( ) plot(Year, Obs, ylab = "log(mortality)", cex = 0.5,
+     main = "England & Wales, male, age 65", pch = 16, col = "blue")
+
+#
+#   Define some powers of year
+#
+
+```
+
+#### Part (b)
+
+Repeat (a) for age 20.
+
+```{r}
+#
+#   Age 20 can be done with a change of data and the same program.
+#   The labelling needs altered (although this too can be made automatic).
+#
+
+```
+
+#### Part (c)
+
+Note for interest the amazing changes in mortality that have taken place from 1841 to 2005.
