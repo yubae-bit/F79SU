@@ -1,0 +1,250 @@
+---
+title: "Class 6 Testing Graduations (Solution)"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+## Introduction
+
+This notebook will start with a section on standard table graduation, followed by testing graduation and goodness of fits.
+
+## Standard Table Graduation `Standard.r`
+
+This section illustrates standard table graduation using the **Gompertz model with Poisson errors** and compares different modeling approaches applied to **CMI data**. First, we load the required dataset, which contains mortality data for different years and age groups.
+
+```{r}
+# URL for CMI_read.r on github
+CMI_Deaths_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_Deaths.csv"
+CMI_Exposures_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_Exposures.csv"
+CMI_Read_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_read.r"
+
+# Download the necessary files
+download.file(CMI_Deaths_url, destfile = "CMI_Deaths.csv", mode = "wb")
+download.file(CMI_Exposures_url, destfile = "CMI_Exposures.csv", mode = "wb")
+
+# Now source the R script
+source("CMI_read.r")
+```
+
+------------------------------------------------------------------------
+
+### Select Data for Standard Table Graduation
+
+We begin by selecting mortality data for the year 2000, focusing on ages 40 to 80. This data will be used to fit our standard table graduation model.
+
+```{r}
+
+```
+
+### Fit Gompertz Model with Poisson Errors
+
+Now, we fit a Poisson regression model to estimate mortality rates using the Gompertz function. The offset for exposure ensures proper modeling of mortality rates per unit exposure.
+
+```{r}
+
+```
+
+### Visualization of Standard Table Graduation
+
+The fitted model is plotted to visualize the estimated mortality rates against observed values. This helps assess how well the model fits the data.
+
+```{r}
+```
+
+### Save Standard Table Graduation on Log Scale
+
+We store the fitted log mortality rates for further comparison with other datasets.
+
+```{r}
+```
+
+### Comparison with Fresh Data (Year 2005)
+
+Next, we retrieve mortality data for the year 2005 and compare it against the standard table from 2000 to observe potential mortality trends.
+
+```{r}
+```
+
+### Graduation of 2005 Data using Gompertz Model
+
+To understand how mortality rates evolve, we fit a new Gompertz model for the 2005 dataset and compare it with the standard table graduation.
+
+```{r}
+```
+
+### Fit GLM of DTH on Standard Table
+
+Now, we fit a generalized linear model (GLM) to estimate the relationship between deaths and the previously fitted standard table log mortality rates.
+
+```{r}
+```
+
+### Weighted Least Squares Graduation
+
+In addition to the Poisson regression approach, we perform a weighted least squares regression to account for variability in exposure.
+
+```{r}
+```
+
+### Comparison of Standard and Data Graduation
+
+We compare different graduation approaches through multiple visualizations to assess the effectiveness of different modeling techniques.
+
+```{r}
+```
+
+#### Interpretation of the plots
+
+-   **Panels A & C** show that both **Gompertz and GLM models fit the mortality data well**.
+-   **Panel B** confirms that **the standard table graduation closely follows observed data**.
+-   **Panel D** highlights **differences between GLM and weighted least squares approaches**, which may suggest potential refinements in modeling mortality trends.
+
+### Conclusion
+
+-   The Gompertz Poisson model is effective for mortality graduation.
+-   Comparison of 2000 and 2005 data allows assessment of changes in mortality trends.
+-   Weighted least squares provides an alternative fit that accounts for exposure size.
+
+## Functions for Testing Graduation `Test_GoF.r`
+
+### Chi-squared
+
+```{r}
+#     Chi-square test
+#
+#     Arguments: Z = residuals Z.x
+#                Npar = number of fitted parameters
+#
+```
+
+### Standardized deviations test
+
+#### Equal Area Test
+
+```{r}
+#     Equal area test
+#
+#     Arguments: Z = residuals Z.x
+#                N = Number of cells
+#
+
+```
+
+#### Equal Width Test
+
+```{r}
+#     Equal width test
+#
+#     Arguments: Z = residuals Z.x
+#                W = Width of internal cells
+#
+```
+
+### Sign Test
+
+```{r}
+#     Sign test
+#
+#     Argument: Z = residuals Z.x
+#
+```
+
+### Change of Sign Test
+
+```{r}
+#     Change of sign test
+#
+#     Argument: Z = residuals Z.x
+#
+```
+
+### Runs Test
+
+```{r}
+#     Runs test
+#
+#     Arguments: Z = residuals Z.x
+#
+#     This function calls the subsiduary function Runs( )
+#
+
+```
+
+#### Using a Permutation Test
+
+```{r}
+#     Runs test using a permutation test
+#
+#     Arguments: Z = residuals Z.x
+#                n = number of samples - defaults to 1000 if n is not set
+#     Calls the function Runs.test( )
+#
+
+```
+
+### Serial Correlation test
+
+```{r}
+#     Serial correlation test
+#
+#     Arguments: Z = residuals Z.x
+#
+```
+
+## Example from Chapter 6 `Chap_6_Eg.r`
+
+```{r}
+#
+#    Example in Chapter 6 to illustrate statistical tests
+#
+#    Input data, draw plots, fit model and calculate Z.x
+#
+
+#
+#    Chis^2 test
+#
+#
+#    Standardised deviations test
+#
+#    Equal width cells
+#
+
+#    Equal area cells
+#
+#
+#    Sign test
+#
+#
+#    Change of sign test
+#
+#
+#    Runs test
+#
+#
+#    and in its permutation form
+#
+#
+#    Serial correlation test
+#
+#  
+
+```
+
+How would you interpret each test?
+
+## Aside: Using simulations in `ChiTest_Sim.r`
+
+```{r}
+#
+#     Chis2 tests or standardized deviations test via simulation
+#
+#     Z contains the residuals
+#     N is the number of cells
+#
+#
+#
+
+```
+
+How would you interpret this?
