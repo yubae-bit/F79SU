@@ -1,0 +1,157 @@
+---
+title: "Tutorial 6: Graduation II"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+## Tutorial 6: Graduation II
+
+### Question 1
+
+Based on HW, 2006. The table gives the central exposed to risk, $E_c^x$, the number ofdeaths, $d_x$, and $\log \hat{μ}_x$ for a set of male assured lives, $\mathcal{S}$, for ages $x = 60, . . . , 72$. Here $\hat{μ}_x$ is the usual maximum likelihood estimate of the force of mortality at age $x + \frac{1}{2}$ .
+
+| Age $x$ | $E^c_x$ | $d_x$ | $\log \hat{\mu}_x$ | $\dot{d}_x$ | $z_x$  |
+|---------|---------|-------|--------------------|-------------|--------|
+| 60      | 52250   | 314   | -5.11              | 314.8       | -0.044 |
+| 61      | 47400   | 312   | -5.02              | 321.1       | -0.506 |
+| 62      | 44860   | 352   | -4.85              | 341.7       | 0.559  |
+| 63      | 42920   | 334   | -4.86              | 367.5       | -1.749 |
+| 64      | 38920   | 405   | -4.57              | 374.7       | 1.564  |
+| 65      | 24950   | 257   | -4.58              | 270.1       | -0.797 |
+| 66      | 16900   | 206   | -4.26              | 205.7       | 0.087  |
+| 67      | 14990   | 212   | -4.26              | 205.1       | 0.478  |
+| 68      | 13550   | 235   | -4.05              | 208.5       | 1.835  |
+| 69      | 12160   | 223   | -4.00              | 213.0       | 0.807  |
+| 70      | 10950   | 200   | -4.00              | 213.0       | -0.807 |
+| 71      | 9770    | 217   | -3.81              | 213.7       | 0.226  |
+| 72      | 8770    | 195   | -3.81              | 215.7       | -1.408 |
+
+The table is graduated by fitting a Poisson generalised linear model with a graduation of the form $\log \dot{μ}_ x = a+bx$. The table also shows the fitted number of deaths, $\dot{d}_x$, and the Pearson residuals, $z_x$, from this model. You are to use R to answer this question.
+
+#### Part (a)
+
+Enter the ages, deaths and central exposures into R and hence obtain a plot $\log \hat{μ}_x$ against age.
+
+```{r}
+#   Enter data and calculate log(mu_x)
+#
+
+
+```
+
+#### Part (b)
+
+Use the `glm( )` function to fit the model and add the fitted log mortality to the plot.
+
+```{r}
+
+
+```
+
+#### Part (c)
+
+Verify that the graduated deaths, $\dot{d}_x$, and the Pearson residuals, $z_x$, are as shown in the table. Comment on the success of the graduation.
+
+```{r}
+
+```
+
+#### Part (d)
+
+Test the suitability of the graduation with (i) the $χ2$-test (ii) the standardised deviations test (use four equal area cells for the test) (iii) the sign test (iv) the change of signs test (v) the runs test, and (vi) the serial correlation test. What is your conclusion?
+
+```{r}
+
+```
+
+#### Part (e)
+
+An actuary suggests graduating the table by minimising
+
+$$
+S(\alpha, \beta) = \sum_{x} w_x(\log \hat{\mu}_x - \alpha - \beta x )^2
+$$
+
+Explain briefly the role of the weights $w_x$ in the above expression and use the $Δ$-method to suggest suitable values for the weight function $w_x$. Fit the model in R and compare the fitted model to that obtained in (b).
+
+```{r}
+
+```
+
+### Question 2
+
+Obtain the deaths, $d_t$, $t = 1950, . . . , 2005$, and central exposures, $E_c^t$ , for age 70 from the CMI data files. Convert the central exposures to initial exposures, $E_t$. Let $\hat{L}_t$ be the maximum likelihood estimates of $\text{logit}(q_t)$.
+
+```{r}
+# URL for CMI_read.r on github
+CMI_Deaths_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_Deaths.csv"
+CMI_Exposures_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_Exposures.csv"
+CMI_Read_url <- "https://raw.githubusercontent.com/yubae-bit/F79SU/main/CMI%20and%20HMD%20data%20sets/CMI_read.r"
+
+# Download the necessary files
+download.file(CMI_Deaths_url, destfile = "CMI_Deaths.csv", mode = "wb")
+download.file(CMI_Exposures_url, destfile = "CMI_Exposures.csv", mode = "wb")
+download.file(CMI_Read_url, destfile = "CMI_read.r", mode = "wb")
+
+# Now source the R script
+source("CMI_read.r")
+
+# Alternatively to running the code above, you can simply add the files above to the same working directory as this file.
+
+#   Select age 70 data and obtain Q.x and its logit
+#
+
+
+```
+
+#### Part (a)
+
+Plot $\hat{L}_t$ against $t$.
+
+```{r}
+
+```
+
+#### Part (b)
+
+Fit the generalised linear model for $\hat{q}_t$ on $t$ with quadratic predictor, logit link and binomial error. Obtain the fitted logits, $\dot{L}_t$, add the fitted curve to your plot in (a) and comment informally on the quality of the fit.
+
+```{r}
+```
+
+#### Part (c)
+
+Calculate the fitted deaths, $\dot{d}_t$.
+
+```{r}
+```
+
+#### Part (d)
+
+Calculate the Pearson residuals, $z_t$, and plot them against $t$. Again, comment on the quality of the fit to the data.
+
+```{r}
+```
+
+#### Part (e)
+
+Test the suitability of the graduation with (i) the \$χ\$2-test (ii) the standardised deviations test (use ten equal area cells for the test) (iii) the sign test (iv) the change of signs test (v) the runs test, and (vi) the serial correlation test. What is your conclusion?
+
+```{r}
+
+```
+
+#### Part (f)
+
+An actuary suggests graduating the table by minimising
+
+$$
+S(\beta_0, \beta_1, \beta_2) = \sum_{x} w_t\left(\text{logit} (\hat{q}_t) - \beta_0 - \beta_1 t - \beta_2 t^2\right)^2
+$$
+
+Explain briefly the role of the weights $w_t$ in the above expression and use the $Δ$-method to suggest suitable values for the weight function $w_t$. Fit the model in R and compare the fitted model to that obtained in (b).
+
+```{r}
+
+```
