@@ -1,0 +1,213 @@
+---
+title: "Tutorial 7: Lee Carter Model Q4"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+## Q4
+
+### (a)
+
+Fit a Lee-Carter model to the HMD data for England & Wales, males ages 50–90, years 1940–1980. Plot the values of $\hat{\alpha}_x, \hat{\beta}_x$ and $\hat{\kappa}_y$.
+
+```{r}
+#
+# Load gnm library
+#
+# install.packages("gnm") - if not installed
+library("gnm")
+#
+# Read HMD data
+#
+source("EngWales_read.r")
+Dth <- Dth.M[ Age>=50 & Age <= 90 , Year>=1940 & Year <=1980 ]
+Exp <- Exp.M[ Age>=50 & Age <= 90 , Year>=1940 & Year <=1980 ]
+Obs <- log( Dth/Exp )
+#
+# Convert to vectors
+#
+Dth.V <- c(Dth)
+Exp.V <- c(Exp)
+#
+# Age and Year as factors
+#
+AGE <- 50:90
+YEAR <- 1940:1980
+Age.F <- factor(rep(AGE , ncol(Dth)))
+Year.F <- factor(rep(YEAR , each=nrow(Dth))) 
+#
+# Fit model
+#
+LC.Model <- gnm( Dth.V ~ -1 + Age.F + Mult(Age.F,Year.F) , offset=log(Exp.V) , family=poisson)
+Alpha.gnm <- LC.Model$coefficients[1:41] 
+Beta.gnm <- LC.Model$coefficients[42:82] 
+Kappa.gnm <- LC.Model$coefficients[83:123] 
+#
+# Satisfy identifiability constraints
+#
+Kappa.m <- mean(Kappa.gnm) 
+Beta.m <- mean(Beta.gnm) 
+Alpha.hat <- Alpha.gnm + Kappa.m * Beta.gnm 
+Beta.hat <- Beta.gnm / (nrow(Dth) * Beta.m) 
+Kappa.hat <- nrow(Dth) * Beta.m * (Kappa.gnm - Kappa.m)
+#
+# Fitted values
+#
+Fitted.M.hat = Alpha.hat + Beta.hat %*% t(Kappa.hat)
+#
+# Plot results
+#
+PlotLeeCarter <- function( AGE , YEAR , Obs , Alpha.hat , Beta.hat , Kappa.hat , Fitted.M.hat )
+{
+ par(mfrow = c(2,2), mar = c(4.5,4.5,1,1))
+ plot(AGE, Alpha.hat, xlab = "Age", ylab = expression(alpha), cex = 0.5, pch = 16)
+ #
+ plot(AGE, Beta.hat, xlab = "Age", ylab = expression(beta), cex = 0.5, pch = 16)
+ #
+ plot(YEAR, Kappa.hat, xlab = "Year", ylab = expression(kappa), cex = 0.5, pch = 16)
+ #  
+ Age.Plot = 60  # Set plotting age
+ Row = Age.Plot - min(AGE) + 1
+ plot(YEAR + 0.5, Obs[Row, ], xlab = "Year", ylab =
+     expression(paste("log(",mu,")")), cex = 0.5, pch = 16)
+ lines(YEAR + 0.5, Fitted.M.hat[Row, ], type="l")
+ legend("topright", legend = c("Data", "LC"), pch = c(16, -1), lty = c(-1, 1),
+       bty = "n")
+ legend("bottomleft", legend = paste("Age", Age.Plot), bty = "n")
+}
+
+PlotLeeCarter( AGE , YEAR , Obs , Alpha.hat , Beta.hat , Kappa.hat , Fitted.M.hat )
+```
+
+**Top-left plot (α vs. Age)**
+
+This shows the age-specific baseline log-mortality rates (α). The increasing trend suggests that older individuals have higher mortality rates, which is expected.
+
+**Top-right plot (β vs. Age)**
+
+This represents the sensitivity of mortality rates to period effects (β). The values of β indicate how mortality rates at different ages respond to temporal trends (captured in κ). The U-shape suggests that the effect is stronger at younger and older ages, with a dip in the middle.
+
+**Bottom-left plot (κ vs. Year)**
+
+This shows the time-varying mortality index (κ), which captures overall trends in mortality across years. The declining trend suggests an improvement in overall mortality (i.e., people are living longer). However, the fluctuations may indicate historical events affecting mortality.
+
+**Bottom-right plot (log(μ) over time)**
+
+This compares observed log-mortality rates (dots) against the fitted Lee-Carter model (solid line) at age 60. The close fit between the model and the data suggests that the model captures the historical mortality trends well.
+
+### (b)
+
+By projecting $\hat{\kappa}_y$ as a random walk with drift (see Section 7.4.4) find projected rates $\log(\mu_{x+\frac{1}{2}, y+\frac{1}{2}})$ at ages 50–90, years 1981–2005. Choose an age in the range 50–90 and plot 95% prediction intervals of the projected rates at that age.
+
+```{r}
+# Forecast kappa with drift model
+#
+#install.packages("astsa") #- if not installed
+library("astsa")
+N.Ahead = 25
+Kappa.for = sarima.for(as.ts(Kappa.hat), n.ahead = N.Ahead, p=0, d=1, q=0)
+# 
+#      Prediction error
+#
+Central = Kappa.for$pred
+SE.Pred = Kappa.for$se
+Z = qnorm(0.975)
+Kappa.Up.Pred = Central + Z*SE.Pred
+Kappa.Dn.Pred = Central - Z*SE.Pred
+Forecast = Alpha.hat + Beta.hat %*% t(Central)
+Forecast.Up.Pred = Alpha.hat + Beta.hat %*% t(Kappa.Up.Pred)
+Forecast.Dn.Pred = Alpha.hat + Beta.hat %*% t(Kappa.Dn.Pred)
+Range = 1981:2005
+#
+#   Graphical output at age 60
+#
+Plot.Age = 60
+Plot.Row = Plot.Age - min(AGE) + 1
+par(mfrow = c(1,1))
+par(mar=c(4.2, 4, 1, 0.5), mgp=c(3, 1, 0), las=1, cex=1)
+Year.For = seq(YEAR[1], (YEAR[length(YEAR)]+25))
+plot(YEAR + 0.5, Obs[Plot.Row, ], axes = FALSE, xlab = "Year", ylab = "log(mortality)",
+     xlim = c(1940,2005),
+     ylim = c(min(Forecast.Dn.Pred[Plot.Row, ]), max(Obs[Plot.Row, ]) ))
+axis(1,las = 1, at = seq(1940, 2005, by = 10), tcl = -0.4)
+axis(2, seq(-6,-2, by = 0.5), tcl = -0.4)
+lines(Range + 0.5, Forecast[Plot.Row, ], lwd = 2)
+lines(Range + 0.5, Forecast.Up.Pred[Plot.Row, ], lty = 2, lwd = 2)
+lines(Range + 0.5, Forecast.Dn.Pred[Plot.Row, ], lty = 2, lwd = 2)
+legend("bottomleft", legend = c("Observed", "Central forecast", "95% CI Prediction error"),
+       lty = c(-1, 1, 2, 2), pch = c(1,-1,-1,-1), lwd = 2, bty = "n") 
+```
+First Plot: Forecasting using a Random Walk with Drift
+
+The plot shows the estimated values of the time-dependent mortality index $\hat{\kappa}_y}$ (black circles) and its projected future values (red points) using a random walk with drift. The shaded region represents the 95% confidence intervals (CIs) for the forecasted values. The downward trend suggests a continued decline in mortality over time, with increasing uncertainty as time progresses. This suggests that people are living longer, but we can't be 100% sure of this prediction, hence the larger confidence interval. 
+
+Second Plot: Forecasted log(μ) at Age 60
+
+The plot displays the observed log-mortality rates (circles) for age 60 from 1940 to 1980. The solid line represents the central forecast for mortality from 1981 to 2005, using the projected $\hat{\kappa}_y}$ values. The dashed lines represent the 95% confidence prediction intervals, showing increasing uncertainty over time. The downward trend in the central forecast suggests a continued improvement in mortality rates, consistent with historical trends.
+
+### (c)
+Compare the projected rates at your chosen age with the actual crude rates from
+the England & Wales data in 1981–2005. Comment on the results.
+
+```{r}
+plot(YEAR + 0.5, Obs[Plot.Row, ], axes = FALSE, xlab = "Year", ylab = "log(mortality)",
+     xlim = c(1940,2005),
+     ylim = c(min(Forecast.Dn.Pred[Plot.Row, ]), max(Obs[Plot.Row, ]) ))
+axis(1,las = 1, at = seq(1940, 2005, by = 10), tcl = -0.4)
+axis(2, seq(-6,-2, by = 0.5), tcl = -0.4)
+lines(Range + 0.5, Forecast[Plot.Row, ], lwd = 2)
+lines(Range + 0.5, Forecast.Up.Pred[Plot.Row, ], lty = 2, lwd = 2)
+lines(Range + 0.5, Forecast.Dn.Pred[Plot.Row, ], lty = 2, lwd = 2)
+legend("bottomleft", legend = c("Observed", "Central forecast", "95% CI Prediction error"),
+       lty = c(-1, 1, 2, 2), pch = c(1,-1,-1,-1), lwd = 2, bty = "n") 
+#      Add actual mortality 1981-2005
+#
+Dth.obs <- Dth.M[ Age==60 , Year>=1981 & Year <=2005 ]
+Exp.obs <- Exp.M[ Age==60 , Year>=1981 & Year <=2005 ]
+Obs.obs <- log( Dth.obs/Exp.obs )
+points( 1981:2005 + 0.5 , Obs.obs , pch=4 )
+```
+
+The plot compares the Lee-Carter model’s projected mortality rates for age 60 with the actual crude mortality rates from England & Wales (1981–2005). While the actual rates generally fall within the 95% confidence interval, they decline more rapidly than the central forecast, indicating that mortality improvements were stronger than predicted. The model slightly overestimates mortality in the 1990s and 2000s, suggesting that advancements in healthcare, lifestyle changes, and public health improvements accelerated longevity beyond historical trends. The widening confidence intervals reflect growing uncertainty in long-term projections, highlighting a key limitation of assuming a random walk with drift for forecasting mortality trends. This suggests that structural changes in mortality patterns were not fully captured, leading to a more cautious projection than what actually occurred. 
+
+
+
+### (d)
+Repeat (b) and (c) for some other ages. Do you think the Lee-Carter method
+would have successfully predicted future mortality in England & Wales had it
+been used by an actuary in 1980?
+
+```{r}
+#
+#   Try age 80
+#
+Plot.Age = 80
+Plot.Row = Plot.Age - min(AGE) + 1
+par(mfrow = c(1,1))
+par(mar=c(4.2, 4, 1, 0.5), mgp=c(3, 1, 0), las=1, cex=1)
+Year.For = seq(YEAR[1], (YEAR[length(YEAR)]+25))
+plot(YEAR + 0.5, Obs[Plot.Row, ], axes = FALSE, xlab = "Year", ylab = "log(mortality)",
+     xlim = c(1940,2005),
+     ylim = c(min(Forecast.Dn.Pred[Plot.Row, ]), max(Obs[Plot.Row, ]) ))
+axis(1,las = 1, at = seq(1940, 2005, by = 10), tcl = -0.4)
+axis(2, seq(-6,-2, by = 0.5), tcl = -0.4)
+lines(Range + 0.5, Forecast[Plot.Row, ], lwd = 2)
+lines(Range + 0.5, Forecast.Up.Pred[Plot.Row, ], lty = 2, lwd = 2)
+lines(Range + 0.5, Forecast.Dn.Pred[Plot.Row, ], lty = 2, lwd = 2)
+legend("bottomleft", legend = c("Observed", "Central forecast", "95% CI Prediction error"),
+       lty = c(-1, 1, 2, 2), pch = c(1,-1,-1,-1), lwd = 2, bty = "n") 
+# 
+#      Add actual mortality 1981-2005
+#
+Dth.obs <- Dth.M[ Age==80 , Year>=1981 & Year <=2005 ]
+Exp.obs <- Exp.M[ Age==80 , Year>=1981 & Year <=2005 ]
+Obs.obs <- log( Dth.obs/Exp.obs )
+points( 1981:2005 + 0.5 , Obs.obs , pch=4 )
+```
+
+The plot shows the Lee-Carter model’s projected mortality rates for age 80, compared to the actual mortality rates from England & Wales (1981–2005). Similar to the previous age-60 analysis, the model captures the overall declining trend in mortality but underestimates the pace of improvement, as the actual mortality rates (marked by “X” symbols) fall below the central forecast. While the 95% confidence interval does include most of the observed data, the model still overestimates mortality rates in later years, suggesting that longevity improvements were stronger than anticipated.
+
+Had an actuary used the Lee-Carter model in 1980, it would have provided a reasonable but too prudent of a forecast, predicting continued mortality decline but not fully capturing the acceleration in life expectancy gains. This limitation arises because the model assumes a random walk with drift for $\hat{\kappa}_y}$ , which may not account for structural shifts in mortality trends (e.g., medical advancements, better healthcare, and lifestyle changes). While useful for short- to medium-term projections, the Lee-Carter model alone may not have been sufficient for long-term mortality forecasting without adjustments for emerging longevity trends. This is where the famous Cairns Blake Dowd (CBD) model comes in - developed by Prof. Andrew Cairns from HW!
+
+Since the mortality assumption was too prudent, fewer people than expected are dying, which has mixed implications for different types of insurance products. This is problematic for the annuity business, as policyholders are living longer, resulting in higher-than-expected payouts and increased liabilities. However, it benefits the term assurance business, as more policyholders survive until the end of their policy term, reducing the number of death claims and improving profitability.
