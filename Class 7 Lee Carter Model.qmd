@@ -1,0 +1,63 @@
+---
+title: "Class 7: Lee Carter"
+author: "Yubo Rasmussen"
+format: docx
+editor: visual
+---
+
+```{r setup, include=FALSE}
+# Load required library
+library("gnm")
+```
+
+## **Lab Overview**
+
+In this lab, we will explore the **Lee-Carter mortality model**, a widely used method for modeling and forecasting mortality rates.
+
+## **1. Load Data and Define Variables**
+
+```{r}
+
+```
+
+## **2. Fit the Lee-Carter Model**
+
+```{r}
+
+```
+
+**💡 Question 2:** Why do we use Poisson regression in this model? What does `offset=log(Exp.V)` achieve?
+
+## **3. Adjust for Identifiability Constraints**
+
+```{r}
+
+```
+
+## **4. Compute Fitted Mortality Rates**
+
+```{r}
+
+```
+
+## **5. Visualizing the Model Parameters**
+
+```{r}
+
+```
+
+## **6. Forecasting Future Mortality Rates**
+
+We now forecast mortality rates using a **random walk with drift model** for (\kappa\_t).
+
+```{r}
+
+```
+
+## **7. Accounting for Parameter Uncertainty**
+
+We also calculate **parameter uncertainty** in our forecasts:
+
+```{r}
+
+```
